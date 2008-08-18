@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Semantic Editor"
+            extensions="sw"
+            icon="icons/sample.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.swid.editors.semEditor"
+            id="org.swedit.editors.semEditor">
+      </editor>
+   </extension>
+
+</plugin>
