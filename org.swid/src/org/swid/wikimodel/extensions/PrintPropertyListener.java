@@ -161,7 +161,7 @@ public class PrintPropertyListener extends BlankListener {
 		// assert model.size()==0 does not fail.. why?
 		try {
 			model.readFrom(new FileReader(
-					"resources/commonwikiparseasdrtestrdf.rdf"));
+					"/home/gen/users/venkatesh/workspace/commonwikiparsertestrdf.rdf"));
 			// System.out.println(
 			// "========================DUMP=================================="
 			// );

@@ -8,7 +8,7 @@
             name="Semantic Editor"
             extensions="sw"
             icon="icons/sample.gif"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            contributorClass="org.swid.editors.SwidActionContributor"
             class="org.swid.editors.semEditor"
             id="org.swedit.editors.semEditor">
       </editor>
