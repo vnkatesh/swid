@@ -36,7 +36,7 @@ The application converts the page above into the following statements:
   * wiki:NEPOMUK_meeting_20081112 pimo:Attendee wiki:John_Doe
   * wiki:NEPOMUK_meeting_20081112 pimo:hasLocation wiki:KaisersLautern
 
-Other examples (from [http://code.google.com/p/wikimodel/wiki/AdvancedStructuralElements WikiModelAdvancedStructuralElements):
+Other examples (from [http://code.google.com/p/wikimodel/wiki/AdvancedStructuralElements WikiModelAdvancedStructuralElements]):
 
 {{{
 
@@ -62,7 +62,7 @@ spawn on multiple lines forming one big paragraph.
 
 }}}
 
-Inline properties: 
+Inline properties support:
 
 {{{
 I am living in %liveIn(Paris).
