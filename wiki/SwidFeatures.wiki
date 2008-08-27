@@ -14,7 +14,7 @@ Example: Load http://xmlns.com/foaf/spec/20071002.rdf and http://www.semanticdes
 
 The ontologies are then stored as a set of statements in the RDF database.
 
-== Conversion of a wiki page written in CommonSyntax into a set of statements ==
+== Conversion of a wiki page written in [http://code.google.com/p/wikimodel/wiki/WikiSyntaxCommon CommonSyntax] into a set of statements ==
 
 Example: let's consider the wiki page below "wiki.NEPOMUK_meeting_20081112"
 
