@@ -21,13 +21,13 @@ Example: let's consider the wiki page below "wiki.NEPOMUK_meeting_20081112"
 {{{
 1 NEPOMUK meeting - November 12 2008
 
-%rdf:type pimo:Meeting
+%rdf:type [pimo:Meeting]
 
-%pimo:Attendee wiki.John_Doe
+%pimo:Attendee [wiki.John_Doe]
 
-%pimo:Attendee wiki.James_Dunt
+%pimo:Attendee [wiki.James_Dunt]
 
-%pimo:hasLocation wiki.KaisersLautern
+%pimo:hasLocation [wiki.KaisersLautern]
 }}}
 
 The application converts the page above into the following statements:
@@ -35,6 +35,38 @@ The application converts the page above into the following statements:
   * wiki:NEPOMUK_meeting_20081112 rdf:type pimo:Meeting
   * wiki:NEPOMUK_meeting_20081112 pimo:Attendee wiki:John_Doe
   * wiki:NEPOMUK_meeting_20081112 pimo:hasLocation wiki:KaisersLautern
+
+Other examples (from [http://code.google.com/p/wikimodel/wiki/AdvancedStructuralElements WikiModelAdvancedStructuralElements):
+
+{{{
+
+%title A simple document
+
+%summary A short description of this document. 
+It can contain *in-line formatting* and it can be
+spawn on multiple lines forming one big paragraph.
+
+%author (((
+  %firstName Mikhail
+  %lastName Kotelnikov
+  %worksIn (((
+    %type [Company]
+    %name Cognium Systems
+    %address (((
+         ....
+    )))
+    %description *Cognium Systems* is a 
+    semantic web company...
+  )))
+)))
+
+}}}
+
+Inline properties: 
+
+{{{
+I am living in %liveIn(Paris).
+}}}
 
 == Storage of page contents ==
 
@@ -59,6 +91,8 @@ Example: if the current page has an rdf:type whose value is "pimo:Person", then 
 The editor provides support for completing a property value based on the domain of the related property.
 
 Example: if the user is editing the value of the property "pimo:attendee", the editor will suggest resource names compatible with the type "pimo:Person".
+
+== Syntax highlighting ==
 
 
 == Visual representation of a page properties ==
