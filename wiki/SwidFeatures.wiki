@@ -1,4 +1,5 @@
 #summary Designing a semantic wiki editor based on Eclipse RCP, WikiModel, RDF
+#labels Featured,Phase-Requirements
 
 = Introduction =
 
@@ -93,6 +94,8 @@ The editor provides support for completing a property value based on the domain 
 Example: if the user is editing the value of the property "pimo:attendee", the editor will suggest resource names compatible with the type "pimo:Person".
 
 == Syntax highlighting ==
+
+If possible, after supporting general semantic and [http://code.google.com/p/wikimodel CommonWikiSyntax], the user-loaded RDF semantic data could also be, possibly highlighted.
 
 
 == Visual representation of a page properties ==
