@@ -138,13 +138,8 @@ The editor lets the user enter SPARQL queries inline and execute them against th
   * check consistencty, Status: Looking for implementation similar to ValidityReport in Jena for RDF2GO
   * provide visual feedback and error description if any
 
-= Tracks =
+= Todos =
 
-  * ~~look into [http://code.google.com/p/wikimodel WikiModel] code~~
+  * release SWID as an Eclipse RCP product
   * look into Vex editor architecture
   * [http://www.eclipse.org/articles/article.php?file=Article-JavaCodeManipulation_AST/index.html Java AST manipulation in Eclipse]
-  * have a meeting with Mikhail week 26 May.
-  * ~~install XWiki~~
-  * ~~install XWiki-Eclipse~~
-  * ~~look into XWiki-Eclipse code~~
-  * ~~connect to Fabio Mancinelli, author of XWiki-Eclipse, and currently in post doc at INRIA on distributed systems and dynamic protocols. XWiki employee, part time. fabio.mancinelli at xwiki.com http://www.fabiomancinelli.org~~
