@@ -114,19 +114,22 @@ public class PrintPropertyListener extends BlankListener {
 	private int i;
 	private org.ontoware.rdf2go.model.Model model;
 	private ModelFactory modelFactory;
+	private String[] names;
+	private String dir;
 
-	private final String namespace = "http://code.google.com/p/wikimodel/resource/commonwikiparsertest#";
-
-	private Reasoning reasoning = Reasoning.rdfs; // can be Reasoning.owl also
+	private final String namespace; 
 
 	private List<NTriples> triples = new ArrayList<NTriples>();
 
-	public PrintPropertyListener(IWikiPrinter printer) {
+	public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, String dir ,String[] names) {
 		fPrinter = printer;
 		i = -1;
+		this.names = names;
+		this.dir = dir;
+		namespace = ns; 
 		resetDocument();
 		modelFactory = RDF2Go.getModelFactory();
-		model = modelFactory.createModel(reasoning);
+		model = modelFactory.createModel(r); // can be Reasoning.owl or Reasoning.rdfs or something else
 		model.open();
 	}
 
@@ -160,23 +163,24 @@ public class PrintPropertyListener extends BlankListener {
 		// TODO Validate..
 		// assert model.size()==0 does not fail.. why?
 		try {
-			model.readFrom(new FileReader(
-					"/home/gen/users/venkatesh/workspace/commonwikiparsertestrdf.rdf"));
-			// System.out.println(
-			// "========================DUMP=================================="
-			// );
-			// model.dump();
+			if(names.length>0)
+				for(int i=0;i<names.length;i++)
+					model.readFrom(new FileReader(dir+names[i]));
+			System.out.println(
+					"\n========================DUMP==================================\n"
+			);
+			model.dump();
 			OutputStreamWriter writer = new OutputStreamWriter(System.out);
-			// System.out.println(
-			// "========================NTriples=================================="
-			// );
-			// model.writeTo( writer, Syntax.Ntriples);
-			// System.out.println(
-			// "========================RDFXML=================================="
-			// );
-			// model.writeTo( writer, Syntax.RdfXml);
+			System.out.println(
+					"\n========================NTriples==================================\n"
+			);
+			model.writeTo( writer, Syntax.Ntriples);
+			//			System.out.println(
+			//					"========================RDFXML=================================="
+			//			);
+			//			model.writeTo( writer, Syntax.RdfXml);
 			System.out
-					.println("========================Turtle==================================");
+			.println("\n========================Turtle==================================\n");
 			model.writeTo(writer, Syntax.Turtle);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,8 +190,8 @@ public class PrintPropertyListener extends BlankListener {
 	@Override
 	public void endPropertyBlock(String propertyUri, boolean doc) {
 		triples
-				.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val
-						.get(i)));
+		.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val
+				.get(i)));
 		// triples.get(triples.size() - 1).printStatement(i);
 		triples.get(triples.size() - 1).addStatement();
 		arr_sub.remove(i);
