@@ -1,11 +1,12 @@
 package org.swid.wikimodel.extensions;
 
+import org.ontoware.rdf2go.model.Model;
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.WikiFormat;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 
-public class BlankListener implements IWemListener {
+public class BlankListener implements IWemListenerModified {
 
 	public void beginDefinitionDescription() {
 	}
@@ -160,6 +161,11 @@ public class BlankListener implements IWemListener {
 	}
 
 	public void onWord(String str) {
+	}
+
+	@Override
+	public Model getModel() {
+		return null;
 	}
 
 }
