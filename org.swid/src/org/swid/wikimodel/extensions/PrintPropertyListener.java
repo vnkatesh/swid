@@ -8,6 +8,7 @@ import java.util.List;
 import org.ontoware.rdf2go.ModelFactory;
 import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.Reasoning;
+import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
 import org.ontoware.rdf2go.model.node.PlainLiteral;
 import org.ontoware.rdf2go.model.node.URI;
@@ -112,7 +113,7 @@ public class PrintPropertyListener extends BlankListener {
 	private String document;
 	private final IWikiPrinter fPrinter;
 	private int i;
-	private org.ontoware.rdf2go.model.Model model;
+	private Model model;
 	private ModelFactory modelFactory;
 	private String[] names;
 	private String dir;
@@ -166,22 +167,6 @@ public class PrintPropertyListener extends BlankListener {
 			if(names.length>0)
 				for(int i=0;i<names.length;i++)
 					model.readFrom(new FileReader(dir+names[i]));
-			System.out.println(
-					"\n========================DUMP==================================\n"
-			);
-			model.dump();
-			OutputStreamWriter writer = new OutputStreamWriter(System.out);
-			System.out.println(
-					"\n========================NTriples==================================\n"
-			);
-			model.writeTo( writer, Syntax.Ntriples);
-			//			System.out.println(
-			//					"========================RDFXML=================================="
-			//			);
-			//			model.writeTo( writer, Syntax.RdfXml);
-			System.out
-			.println("\n========================Turtle==================================\n");
-			model.writeTo(writer, Syntax.Turtle);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -267,5 +252,9 @@ public class PrintPropertyListener extends BlankListener {
 			// happens on the first removal
 		}
 		arr_val.add(i, new Value(isLiteral, temp));
+	}
+
+	public Model getModel() {
+		return model;
 	}
 }

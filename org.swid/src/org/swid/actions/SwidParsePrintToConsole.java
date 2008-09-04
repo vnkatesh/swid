@@ -30,7 +30,7 @@ public class SwidParsePrintToConsole extends TextEditorAction {
 	public void run()
 	{
 		ITextEditor editor = this.getTextEditor();
-		String ns = "http://code.google.com/p/wikimodel/resource/commonwikiparsertest#";
+		String ns = "http://code.google.com/p/swid/resource#";
 		InputDialog dialog_ns = new InputDialog(this.getTextEditor().getEditorSite().getShell(),"Namespace","Enter Required namespace",ns,new IInputValidator() {
 			@Override
 			public String isValid(String newText) {
@@ -52,6 +52,7 @@ public class SwidParsePrintToConsole extends TextEditorAction {
 		String[] names = dialog.getFileNames();
 		String filterpath = dialog.getFilterPath()+"/";
 		//FIXME: The below method of sending the absolute path of directory is clumsy.. note debug does give /home/gen/.. in character array!
+		//SwidFunctionalities.parseAndPrint(text,filterpath,names, ns);
 		SwidFunctionalities.parseAndPrint(text,filterpath,names, ns);
 	}
 
