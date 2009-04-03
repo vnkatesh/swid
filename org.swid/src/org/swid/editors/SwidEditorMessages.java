@@ -5,13 +5,13 @@ import java.util.ResourceBundle;
 
 /**
  * @author venkatesh
- *
+ * 
  */
 public class SwidEditorMessages {
 
 	public SwidEditorMessages() {
 	}
-	
+
 	private static final String RESOURCE_BUNDLE = "org.swid.editors.SwidMessages";//$NON-NLS-1$
 
 	private static ResourceBundle fgResourceBundle = ResourceBundle

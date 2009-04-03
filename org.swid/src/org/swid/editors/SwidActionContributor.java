@@ -10,12 +10,12 @@ import org.swid.actions.SwidParsePrintToConsole;
 
 /**
  * @author venkatesh
- *
+ * 
  */
 public class SwidActionContributor extends TextEditorActionContributor {
 
 	private SwidParsePrintToConsole fSwidParsePrintToConsole;
-	
+
 	public SwidActionContributor() {
 		super();
 		try {
@@ -32,14 +32,14 @@ public class SwidActionContributor extends TextEditorActionContributor {
 	public void init(IActionBars bars) {
 		super.init(bars);
 		IMenuManager menuManager = bars.getMenuManager();
-		//IMenuManager editMenu = menuManager.findMenuUsingPath(IWorkbenchActionConstants.M_EDIT);
-		IMenuManager swidMenu = new MenuManager("Swid",
-		"Semantic Tools");
+		// IMenuManager editMenu =
+		// menuManager.findMenuUsingPath(IWorkbenchActionConstants.M_EDIT);
+		IMenuManager swidMenu = new MenuManager("Swid", "Semantic Tools");
 		if (swidMenu != null) {
 			swidMenu.add(fSwidParsePrintToConsole);
 			menuManager.add(swidMenu);
 		}
-		
+
 	}
 
 	private void doSetActiveEditor(IEditorPart part) {
