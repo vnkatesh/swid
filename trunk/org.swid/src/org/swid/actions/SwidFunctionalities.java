@@ -1,5 +1,7 @@
 package org.swid.actions;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -10,8 +12,10 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.Reasoning;
+import org.ontoware.rdf2go.exception.ModelRuntimeException;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Statement;
+import org.ontoware.rdf2go.model.Syntax;
 import org.swid.wikimodel.extensions.IWemListenerModified;
 import org.swid.wikimodel.extensions.PrintPropertyListener;
 import org.wikimodel.wem.IWikiParser;
@@ -27,28 +31,28 @@ public class SwidFunctionalities {
 
 	public static void parseAndPrint(final String text,final String dir,final String[] names,final String ns) {
 		Model model = returnParsedModel(text, dir, names, ns);
-//		System.out.println(
-//				"\n========================DUMP==================================\n"
-//		);
-		//model.dump();
-//		OutputStreamWriter writer = new OutputStreamWriter(System.out);
-//		System.out.println(
-//				"\n========================NTriples==================================\n"
-//		);
-//		try {
-//			model.writeTo( writer, Syntax.Ntriples);
-//			//			System.out.println(
-//			//					"========================RDFXML=================================="
-//			//			);
-//			//			model.writeTo( writer, Syntax.RdfXml);
-//			System.out
-//			.println("\n========================Turtle==================================\n");
-//			model.writeTo(writer, Syntax.Turtle);
-//		} catch (ModelRuntimeException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		System.out.println(
+				"\n========================DUMP==================================\n"
+		);
+		model.dump();
+		OutputStreamWriter writer = new OutputStreamWriter(System.out);
+		System.out.println(
+				"\n========================NTriples==================================\n"
+		);
+		try {
+			model.writeTo( writer, Syntax.Ntriples);
+			//			System.out.println(
+			//					"========================RDFXML=================================="
+			//			);
+			//			model.writeTo( writer, Syntax.RdfXml);
+			System.out
+			.println("\n========================Turtle==================================\n");
+			model.writeTo(writer, Syntax.Turtle);
+		} catch (ModelRuntimeException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 //		System.out.println("##########################################here###################################3");
 		Iterator<Statement> iterator = model.iterator();
 		for(Statement stmt = null;iterator.hasNext();stmt = iterator.next())
