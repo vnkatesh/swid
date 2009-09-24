@@ -1,7 +1,7 @@
 package org.swid.wikimodel.extensions;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.ontoware.rdf2go.ModelFactory;
 import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.Reasoning;
 import org.ontoware.rdf2go.model.Model;
-import org.ontoware.rdf2go.model.Syntax;
 import org.ontoware.rdf2go.model.node.PlainLiteral;
 import org.ontoware.rdf2go.model.node.URI;
+import org.swid.actions.SwidFunctionalities;
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.WikiReference;
 
@@ -20,244 +20,283 @@ import org.wikimodel.wem.WikiReference;
  * @version alpha
  */
 
-public class PrintPropertyListener extends BlankListener {
+public class PrintPropertyListener extends BlankListener
+{
 
-	protected class NTriples {
-		private String predicate;
-		private String subject;
-		private Value value;
+    protected class NTriples
+    {
+        private String predicate;
 
-		public NTriples(String subject, String predicate, Value value) {
-			this.subject = subject;
-			this.predicate = predicate;
-			this.value = value;
-		}
+        private String subject;
 
-		public void addStatement() {
-			URI subject = model.createURI(namespace + this.subject);
-			URI predicate = model.createURI(namespace + this.predicate);
-			if (value.isLiteral) {
-				PlainLiteral value = model.createPlainLiteral(this.value
-						.getValue());
-				model.addStatement(subject, predicate, value);
-			} else {
-				URI value = model.createURI(namespace + this.value.getValue());
-				model.addStatement(subject, predicate, value);
-			}
-		}
+        private Value value;
 
-		public String getPredicate() {
-			return predicate;
-		}
+        public NTriples(String subject, String predicate, Value value)
+        {
+            this.subject = subject;
+            this.predicate = predicate;
+            this.value = value;
+        }
 
-		public String getSubject() {
-			return subject;
-		}
+        public void addStatement()
+        {
+            URI subject = model.createURI(namespace + this.subject);
+            URI predicate = model.createURI(namespace + this.predicate);
+            if (value.isLiteral) {
+                PlainLiteral value = model.createPlainLiteral(this.value.getValue());
+                model.addStatement(subject, predicate, value);
+            } else {
+                URI value = model.createURI(namespace + this.value.getValue());
+                model.addStatement(subject, predicate, value);
+            }
+        }
 
-		public Value getValue() {
-			return value;
-		}
+        public String getPredicate()
+        {
+            return predicate;
+        }
 
-		public void printStatement(int i) {
-			while (i > 0) {
-				print("\t");
-				i--;
-			}
-			println(subject + " --> " + predicate + " --> " + value.getValue());
-		}
-	}
+        public String getSubject()
+        {
+            return subject;
+        }
 
-	protected class Value {
-		private boolean isLiteral;
-		private String value;
+        public Value getValue()
+        {
+            return value;
+        }
 
-		public Value(boolean isLiteral, String value) {
-			this.isLiteral = isLiteral;
-			this.value = value;
-		}
+        public void printStatement(int i)
+        {
+            while (i > 0) {
+                print("\t");
+                i--;
+            }
+            println(subject + " --> " + predicate + " --> " + value.getValue());
+        }
+    }
 
-		public String getValue() {
-			return value;
-		}
+    protected class Value
+    {
+        private boolean isLiteral;
 
-		public boolean isLiteral() {
-			return isLiteral;
-		}
-	}
+        private String value;
 
-	public static String getRandObj(int n) {
-		char[] s = new char[n];
-		int c = 'A';
-		int r1 = 0;
-		for (int i = 0; i < n; i++) {
-			r1 = (int) (Math.random() * 3);
-			switch (r1) {
-			case 0:
-				c = '0' + (int) (Math.random() * 10);
-				break;
-			case 1:
-				c = 'a' + (int) (Math.random() * 26);
-				break;
-			case 2:
-				c = 'A' + (int) (Math.random() * 26);
-				break;
-			}
-			s[i] = (char) c;
-		}
-		return new String(s);
-	}
+        public Value(boolean isLiteral, String value)
+        {
+            this.isLiteral = isLiteral;
+            this.value = value;
+        }
 
-	private List<String> arr_pre = new ArrayList<String>();
-	private List<String> arr_sub = new ArrayList<String>();
-	private List<Value> arr_val = new ArrayList<Value>();
-	private String document;
-	private final IWikiPrinter fPrinter;
-	private int i;
-	private Model model;
-	private ModelFactory modelFactory;
-	private String[] names;
-	private String dir;
+        public String getValue()
+        {
+            return value;
+        }
 
-	private final String namespace;
+        public boolean isLiteral()
+        {
+            return isLiteral;
+        }
+    }
 
-	private List<NTriples> triples = new ArrayList<NTriples>();
+    public static String getRandObj(int n)
+    {
+        char[] s = new char[n];
+        int c = 'A';
+        int r1 = 0;
+        for (int i = 0; i < n; i++) {
+            r1 = (int) (Math.random() * 3);
+            switch (r1) {
+                case 0:
+                    c = '0' + (int) (Math.random() * 10);
+                    break;
+                case 1:
+                    c = 'a' + (int) (Math.random() * 26);
+                    break;
+                case 2:
+                    c = 'A' + (int) (Math.random() * 26);
+                    break;
+            }
+            s[i] = (char) c;
+        }
+        return new String(s);
+    }
 
-	public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r,
-			String dir, String[] names) {
-		fPrinter = printer;
-		i = -1;
-		this.names = names;
-		this.dir = dir;
-		namespace = ns;
-		resetDocument();
-		modelFactory = RDF2Go.getModelFactory();
-		model = modelFactory.createModel(r); // can be Reasoning.owl or
-												// Reasoning.rdfs or something
-												// else
-		model.open();
-	}
+    private List<String> arr_pre = new ArrayList<String>();
 
-	@Override
-	public void beginPropertyBlock(String propertyUri, boolean doc) {
-		if (document == null)
-			resetDocument();
-		i++;
-		if (i == 0)
-			arr_sub.add(i, getDocument());
-		if (i != 0) {
-			String temp;
-			try {
-				temp = arr_val.get(i - 1).getValue();
-			} catch (IndexOutOfBoundsException e) {
-				temp = getRandObj(7);
-				arr_val.add(i - 1, new Value(false, temp));
-			}
-			arr_sub.add(i, temp);
-		}
-		arr_pre.add(i, propertyUri);
-	}
+    private List<String> arr_sub = new ArrayList<String>();
 
-	@Override
-	public void beginPropertyInline(String str) {
-		beginPropertyBlock(str, false);
-	}
+    private List<Value> arr_val = new ArrayList<Value>();
 
-	@Override
-	public void endDocument() {
-		// TODO Validate..
-		// assert model.size()==0 does not fail.. why?
-		try {
-			if (names.length > 0)
-				for (int i = 0; i < names.length; i++)
-					model.readFrom(new FileReader(dir + names[i]));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private String document;
 
-	@Override
-	public void endPropertyBlock(String propertyUri, boolean doc) {
-		triples
-				.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val
-						.get(i)));
-		// triples.get(triples.size() - 1).printStatement(i);
-		triples.get(triples.size() - 1).addStatement();
-		arr_sub.remove(i);
-		arr_pre.remove(i);
-		arr_val.remove(i);
-		i--;
-	}
+    private final IWikiPrinter fPrinter;
 
-	@Override
-	public void endPropertyInline(String inlineProperty) {
-		endPropertyBlock(inlineProperty, false);
-	}
+    private int i;
 
-	public String getDocument() {
-		return document;
-	}
+    private Model model;
 
-	@Override
-	public void onReference(String ref) {
-		word(ref, true); // TODO what?
-	}
+    private ModelFactory modelFactory;
 
-	@Override
-	public void onReference(WikiReference ref) {
-		word(ref.toString(), false);
-	}
+    private String[] names;
 
-	@Override
-	public void onSpace(String str) {
-		word(" ", true);
-	}
+    private String dir;
 
-	@Override
-	public void onWord(String str) {
-		word(str, true);
-	}
+    private final String namespace;
 
-	protected void print(String str) {
-		fPrinter.print(str);
-	}
+    private List<NTriples> triples = new ArrayList<NTriples>();
 
-	protected void println() {
-		fPrinter.println("");
-	}
+    public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, String dir, String[] names)
+    {
+        fPrinter = printer;
+        i = -1;
+        this.names = names;
+        this.dir = dir;
+        namespace = ns;
+        resetDocument();
+        modelFactory = RDF2Go.getModelFactory();
+        model = modelFactory.createModel(r); // can be Reasoning.owl or
+        // Reasoning.rdfs or something
+        // else
+        model.open();
+    }
 
-	protected void println(String str) {
-		fPrinter.println(str);
-	}
+    @Override
+    public void beginPropertyBlock(String propertyUri, boolean doc)
+    {
+        if (document == null)
+            resetDocument();
+        i++;
+        if (i == 0)
+            arr_sub.add(i, getDocument());
+        if (i != 0) {
+            String temp;
+            try {
+                temp = arr_val.get(i - 1).getValue();
+            } catch (IndexOutOfBoundsException e) {
+                temp = getRandObj(7);
+                arr_val.add(i - 1, new Value(false, temp));
+            }
+            arr_sub.add(i, temp);
+        }
+        arr_pre.add(i, propertyUri);
+    }
 
-	public void resetDocument() {
-		// TODO reset document, Ideally, has to return XWiki.vnkatesh , using
-		// xmlrpc
-		setDocument("Main.test");
-	}
+    @Override
+    public void beginPropertyInline(String str)
+    {
+        beginPropertyBlock(str, false);
+    }
 
-	public void setDocument(String document) {
-		this.document = document;
-	}
+    @Override
+    public void endDocument()
+    {
+        // TODO Validate..
+        // assert model.size()==0 does not fail.. why?
+        try {
+            if (names.length > 0)
+                for (int i = 0; i < names.length; i++)
+                    model = SwidFunctionalities.readFrom(model, new FileReader(dir + names[i]));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void word(String str, boolean isLiteral) {
-		String temp;
-		if (i == -1)
-			return; // not inside a property block.
-		try {
-			temp = arr_val.get(i).getValue();
-		} catch (IndexOutOfBoundsException e) {
-			temp = "";
-		}
-		temp += str;
-		try {
-			arr_val.remove(i);
-		} catch (IndexOutOfBoundsException e1) {
-			// happens on the first removal
-		}
-		arr_val.add(i, new Value(isLiteral, temp));
-	}
+    @Override
+    public void endPropertyBlock(String propertyUri, boolean doc)
+    {
+        triples.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val.get(i)));
+        // triples.get(triples.size() - 1).printStatement(i);
+        triples.get(triples.size() - 1).addStatement();
+        arr_sub.remove(i);
+        arr_pre.remove(i);
+        arr_val.remove(i);
+        i--;
+    }
 
-	public Model getModel() {
-		return model;
-	}
+    @Override
+    public void endPropertyInline(String inlineProperty)
+    {
+        endPropertyBlock(inlineProperty, false);
+    }
+
+    public String getDocument()
+    {
+        return document;
+    }
+
+    @Override
+    public void onReference(String ref)
+    {
+        word(ref, true); // TODO what?
+    }
+
+    @Override
+    public void onReference(WikiReference ref)
+    {
+        word(ref.toString(), false);
+    }
+
+    @Override
+    public void onSpace(String str)
+    {
+        word(" ", true);
+    }
+
+    @Override
+    public void onWord(String str)
+    {
+        word(str, true);
+    }
+
+    protected void print(String str)
+    {
+        fPrinter.print(str);
+    }
+
+    protected void println()
+    {
+        fPrinter.println("");
+    }
+
+    protected void println(String str)
+    {
+        fPrinter.println(str);
+    }
+
+    public void resetDocument()
+    {
+        // TODO reset document, Ideally, has to return XWiki.vnkatesh , using
+        // xmlrpc
+        setDocument("Main.test");
+    }
+
+    public void setDocument(String document)
+    {
+        this.document = document;
+    }
+
+    public void word(String str, boolean isLiteral)
+    {
+        String temp;
+        if (i == -1)
+            return; // not inside a property block.
+        try {
+            temp = arr_val.get(i).getValue();
+        } catch (IndexOutOfBoundsException e) {
+            temp = "";
+        }
+        temp += str;
+        try {
+            arr_val.remove(i);
+        } catch (IndexOutOfBoundsException e1) {
+            // happens on the first removal
+        }
+        arr_val.add(i, new Value(isLiteral, temp));
+    }
+
+    public Model getModel()
+    {
+        return model;
+    }
 }
