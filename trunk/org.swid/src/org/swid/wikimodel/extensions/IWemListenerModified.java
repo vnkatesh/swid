@@ -8,10 +8,10 @@ import org.wikimodel.wem.IWemListener;
 
 /**
  * @author gen
- * 
  */
-public interface IWemListenerModified extends IWemListener {
+public interface IWemListenerModified extends IWemListener
+{
 
-	Model getModel();
+    Model getModel();
 
 }
