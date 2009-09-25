@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.ontoware.rdf2go.ModelFactory;
 import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.Reasoning;
@@ -142,17 +143,21 @@ public class PrintPropertyListener extends BlankListener
 
     private String dir;
 
+    private IProgressMonitor monitor;
+
     private final String namespace;
 
     private List<NTriples> triples = new ArrayList<NTriples>();
 
-    public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, String dir, String[] names)
+    public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, String dir, String[] names,
+        IProgressMonitor monitor)
     {
         fPrinter = printer;
         i = -1;
         this.names = names;
         this.dir = dir;
         namespace = ns;
+        this.monitor = monitor;
         resetDocument();
         modelFactory = RDF2Go.getModelFactory();
         model = modelFactory.createModel(r); // can be Reasoning.owl or
@@ -205,9 +210,15 @@ public class PrintPropertyListener extends BlankListener
     @Override
     public void endPropertyBlock(String propertyUri, boolean doc)
     {
-        triples.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val.get(i)));
-        // triples.get(triples.size() - 1).printStatement(i);
-        triples.get(triples.size() - 1).addStatement();
+        if (arr_pre.get(i).equalsIgnoreCase("Load")) {
+            SwidFunctionalities.getGetCurrentModel().addModel(
+                SwidFunctionalities.returnRemoteModel(arr_val.get(i).getValue()));
+            monitor.worked(20);
+        } else {
+            triples.add(new NTriples(arr_sub.get(i), arr_pre.get(i), arr_val.get(i)));
+            // triples.get(triples.size() - 1).printStatement(i);
+            triples.get(triples.size() - 1).addStatement();
+        }
         arr_sub.remove(i);
         arr_pre.remove(i);
         arr_val.remove(i);
