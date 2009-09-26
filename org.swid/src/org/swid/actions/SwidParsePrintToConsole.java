@@ -3,10 +3,13 @@ package org.swid.actions;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.ontoware.rdf2go.model.Syntax;
 import org.swid.editors.SwidEditorMessages;
 
 /**
@@ -23,7 +26,7 @@ public class SwidParsePrintToConsole extends TextEditorAction
     public SwidParsePrintToConsole()
     {
         super(SwidEditorMessages.getResourceBundle(), null, null);
-        setText("PrintToConsole");
+        setText("Print to Console");
         setEnabled(true);
     }
 
@@ -47,20 +50,18 @@ public class SwidParsePrintToConsole extends TextEditorAction
                 });
         dialog_ns.create();
         dialog_ns.open();
+        ListDialog dialog = new ListDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        dialog.setBlockOnOpen(true);
+        dialog.setAddCancelButton(true);
+        dialog.setContentProvider(new ArrayContentProvider());
+        dialog.setLabelProvider(new LabelProvider());
+        dialog.setInput(Syntax.list().toArray());
+        dialog.setTitle("Select Syntax of Output");
+        dialog.open();
         ns = dialog_ns.getValue();
         IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
         String text = doc.get();
-        FileDialog dialog = new FileDialog(this.getTextEditor().getEditorSite().getShell(), SWT.MULTI);
-        // TODO Preferences..Set Reasoning option.
-        dialog.setFilterExtensions(new String[] {"*.rdf", "*.owl"});
-        dialog.setText("Choose RDF file(s) to load..");
-        dialog.open();
-        String[] names = dialog.getFileNames();
-        String filterpath = dialog.getFilterPath() + "/";
-        // FIXME: The below method of sending the absolute path of directory is
-        // clumsy.. note debug does give /home/gen/.. in character array!
-        // SwidFunctionalities.parseAndPrint(text,filterpath,names, ns);
-        SwidFunctionalities.parseAndPrint(text, filterpath, names, ns);
+        SwidFunctionalities.parseAndPrint(text, ns, (Syntax) dialog.getResult()[0]);
     }
 
 }
