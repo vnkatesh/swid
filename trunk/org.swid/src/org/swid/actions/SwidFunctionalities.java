@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -42,15 +41,16 @@ public class SwidFunctionalities
 
     private static Model currentModel;
 
-    public static void parseAndPrint(final String text, final String dir, final String[] names, final String ns)
+    public static void parseAndPrint(final String text, final String ns, Syntax syntax)
     {
         if (currentModel == null)
             createModel();
-        currentModel.addModel(returnParsedModel(text, dir, names, ns));
+        currentModel.addModel(returnParsedModel(text, ns));
         OutputStreamWriter writer = new OutputStreamWriter(System.out);
         try {
-            System.out.println("\n========================Turtle==================================\n");
-            currentModel.writeTo(writer, Syntax.Turtle);
+            System.out
+                .println("\n========================" + syntax.getName() + "==================================\n");
+            currentModel.writeTo(writer, syntax);
         } catch (ModelRuntimeException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class SwidFunctionalities
         }
     }
 
-    public static Model returnParsedModel(final String text, final String dir, final String[] names, final String ns)
+    public static Model returnParsedModel(final String text, final String ns)
     {
         try {
             final Model model = RDF2Go.getModelFactory().createModel();
@@ -78,7 +78,7 @@ public class SwidFunctionalities
                         String namespace = ns;
                         monitor.worked(10);
                         IWemListenerModified listener =
-                            new PrintPropertyListener(newPrinter(buf), namespace, Reasoning.rdfs, dir, names, monitor);
+                            new PrintPropertyListener(newPrinter(buf), namespace, Reasoning.rdfs, monitor);
                         try {
                             monitor.subTask("Parsing Input..");
                             parser.parse(reader, listener);
@@ -105,9 +105,9 @@ public class SwidFunctionalities
         IProgressMonitor monitor, boolean quick)
     {
         if (quick)
-            currentModel = quickReturnParsedModel(text, dir, names, ns, monitor);
+            currentModel = quickReturnParsedModel(text, ns, monitor);
         else
-            currentModel = returnParsedModel(text, dir, names, ns);
+            currentModel = returnParsedModel(text, ns);
     }
 
     public void saveCurrentModel(Model model)
@@ -127,11 +127,10 @@ public class SwidFunctionalities
         createModel();
     }
 
-    public static Model quickReturnParsedModel(final String text, final String dir, final String[] names,
-        final String ns, IProgressMonitor monitor)
+    public static Model quickReturnParsedModel(final String text, final String ns, IProgressMonitor monitor)
     {
         IWemListenerModified listener =
-            new PrintPropertyListener(newPrinter(new StringBuffer()), ns, Reasoning.rdfs, dir, names, monitor);
+            new PrintPropertyListener(newPrinter(new StringBuffer()), ns, Reasoning.rdfs, monitor);
         try {
             (new CommonWikiParser()).parse(new StringReader(text), listener);
         } catch (WikiParserException e) {
@@ -227,13 +226,13 @@ public class SwidFunctionalities
             bis.close();
             bos.close();
         } catch (FileNotFoundException e) {
-            showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR, "File Error.",
+            showMessageDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR, "File Error.",
                 "There was an error with Opening/Creating a temporary file on your local system.");
         } catch (MalformedURLException e) {
-            showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR, "URL Error.",
-                "There was error with URL/Locating URL of the Attachment file.");
+            showMessageDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR, "URL Error.",
+                "There was error with URL/Locating the URL.");
         } catch (IOException e) {
-            showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR, "File Error.",
+            showMessageDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR, "File Error.",
                 "There was an error with Opening/Creating a temporary file on your local system.");
         }
     }

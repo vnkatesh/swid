@@ -1,7 +1,5 @@
 package org.swid.wikimodel.extensions;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,23 +137,16 @@ public class PrintPropertyListener extends BlankListener
 
     private ModelFactory modelFactory;
 
-    private String[] names;
-
-    private String dir;
-
     private IProgressMonitor monitor;
 
     private final String namespace;
 
     private List<NTriples> triples = new ArrayList<NTriples>();
 
-    public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, String dir, String[] names,
-        IProgressMonitor monitor)
+    public PrintPropertyListener(IWikiPrinter printer, String ns, Reasoning r, IProgressMonitor monitor)
     {
         fPrinter = printer;
         i = -1;
-        this.names = names;
-        this.dir = dir;
         namespace = ns;
         this.monitor = monitor;
         resetDocument();
@@ -197,14 +188,6 @@ public class PrintPropertyListener extends BlankListener
     public void endDocument()
     {
         // TODO Validate..
-        // assert model.size()==0 does not fail.. why?
-        try {
-            if (names.length > 0)
-                for (int i = 0; i < names.length; i++)
-                    model = SwidFunctionalities.readFrom(model, new FileReader(dir + names[i]));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
